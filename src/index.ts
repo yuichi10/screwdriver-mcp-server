@@ -1,6 +1,8 @@
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { createMcpServer } from './presentation/index';
+import { setupServer } from './presentation/';
 
-const server = createMcpServer();
-const transport = new StdioServerTransport();
-server.connect(transport);
+const port = 3000;
+const app = setupServer();
+
+app.listen(port, () => {
+  console.log(`MCP Server (Express) listening on http://localhost:${port}`);
+});

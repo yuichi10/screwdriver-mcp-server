@@ -4,7 +4,8 @@
     "@types/node": "^24.0.10",
     "axios": "^1.10.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "zod": "^3.25.71"
   },
   "name": "screwdriver-mcp-server",
   "version": "1.0.0",
@@ -23,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/yuichi10/screwdriver-mcp-server/issues"
   },
-  "homepage": "https://github.com/yuichi10/screwdriver-mcp-server#readme"
+  "homepage": "https://github.com/yuichi10/screwdriver-mcp-server#readme",
+  "devDependencies": {
+    "@types/express": "^5.0.3"
+  }
 }

@@ -1,26 +1,67 @@
-import { McpServer, ResourceTemplate } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { addTool } from '../application/addTool';
+import express, { Express } from 'express';
+import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
+import { getMCPServer } from './server';
 
-export const createMcpServer = () => {
-  const server = new McpServer({ name: 'demo-server', version: '1.0.0' });
 
-  server.registerTool('add', {
-    title: 'Addition Tool',
-    description: 'Add two numbers',
-    inputSchema: addTool.schema,
-  }, addTool.handler);
+export const setupServer = (): Express => {
+  const app = express();
+  app.use(express.json());
+  app.post('/mcp', async (req: express.Request, res: express.Response) => {
+  try {
+    const server = getMCPServer(); 
+    const transport: StreamableHTTPServerTransport = new StreamableHTTPServerTransport({
+      sessionIdGenerator: undefined,
+    });
+    res.on('close', () => {
+      console.log('Request closed');
+      transport.close();
+      server.close();
+    });
+    await server.connect(transport);
+    await transport.handleRequest(req, res, req.body);
+  } catch (error) {
+    console.error('Error handling MCP request:', error);
+    if (!res.headersSent) {
+      res.status(500).json({
+        jsonrpc: '2.0',
+        error: {
+          code: -32603,
+          message: 'Internal server error',
+        },
+        id: null,
+      });
+    }
+  }
+});
 
-  server.registerResource(
-    'reference',
-    new ResourceTemplate('reference://info', { list: undefined }),
-    {
-      title: 'Reference Information',
-      description: 'Provides static information.',
+  // SSE notifications not supported in stateless mode
+app.get('/mcp', async (req: express.Request, res: express.Response) => {
+  console.log('Received GET MCP request');
+  res.writeHead(405).end(JSON.stringify({
+    jsonrpc: "2.0",
+    error: {
+      code: -32000,
+      message: "Method not allowed."
     },
-    async () => ({
-      contents: [{ uri: 'reference://info', text: 'This is some reference information.' }],
-    })
-  );
+    id: null
+  }));
+});
 
-  return server;
+// Session termination not needed in stateless mode
+app.delete('/mcp', async (req: express.Request, res: express.Response) => {
+  console.log('Received DELETE MCP request');
+  res.writeHead(405).end(JSON.stringify({
+    jsonrpc: "2.0",
+    error: {
+      code: -32000,
+      message: "Method not allowed."
+    },
+    id: null
+  }));
+});
+
+  return app;
 };
+
+
