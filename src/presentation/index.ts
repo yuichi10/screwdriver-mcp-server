@@ -3,11 +3,12 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { randomUUID } from "node:crypto";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js";
-import { getMCPServer } from "./server";
+import { getMCPServer, setupMCPServer } from "./server";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 
 export const setupStudioServer = async () => {
   console.log("Setting up Studio Server");
+  setupMCPServer();
   const server = getMCPServer();
   const transport = new StdioServerTransport();
   await server.connect(transport);
@@ -25,6 +26,7 @@ const setupStatefulServer = (): Express => {
   const app = express();
   app.use(express.json());
   const transports: { [sessionId: string]: StreamableHTTPServerTransport } = {};
+  setupMCPServer();
 
   app.post(
     ["/mcp", "/mcp/"],
