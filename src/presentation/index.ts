@@ -7,6 +7,7 @@ import { getMCPServer } from "./server";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 
 export const setupStudioServer = async () => {
+  console.log("Setting up Studio Server");
   const server = getMCPServer();
   const transport = new StdioServerTransport();
   await server.connect(transport);
