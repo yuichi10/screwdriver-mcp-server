@@ -13,6 +13,7 @@ export const setupSessionServer = (): Express => {
   app.post(
     ["/mcp", "/mcp/"],
     async (req: express.Request, res: express.Response) => {
+      console.log("statefull MCP request received");
       const sessionId = req.headers["mcp-session-id"] as string | undefined;
       let transport: StreamableHTTPServerTransport;
 
@@ -62,6 +63,7 @@ export const setupSessionServer = (): Express => {
     req: express.Request,
     res: express.Response
   ) => {
+    console.log("Received handleSessionRequest");
     const sessionId = req.headers["mcp-session-id"] as string | undefined;
     if (!sessionId || !transports[sessionId]) {
       res.status(400).send("Invalid or missing session ID");
@@ -104,68 +106,77 @@ export const setupStatelessServer = (): Express => {
   const app = express();
   app.use(express.json());
 
-  app.post("/mcp", async (req: express.Request, res: express.Response) => {
-    // In stateless mode, create a new instance of transport and server for each request
-    // to ensure complete isolation. A single instance would cause request ID collisions
-    // when multiple clients connect concurrently.
+  app.post(
+    ["/mcp", "/mcp/"],
+    async (req: express.Request, res: express.Response) => {
+      // In stateless mode, create a new instance of transport and server for each request
+      // to ensure complete isolation. A single instance would cause request ID collisions
+      // when multiple clients connect concurrently.
 
-    try {
-      const server = getMCPServer();
-      const transport: StreamableHTTPServerTransport =
-        new StreamableHTTPServerTransport({
-          sessionIdGenerator: undefined,
+      try {
+        const server = getMCPServer();
+        const transport: StreamableHTTPServerTransport =
+          new StreamableHTTPServerTransport({
+            sessionIdGenerator: undefined,
+          });
+        res.on("close", () => {
+          console.log("Request closed");
+          transport.close();
+          server.close();
         });
-      res.on("close", () => {
-        console.log("Request closed");
-        transport.close();
-        server.close();
-      });
-      await server.connect(transport);
-      await transport.handleRequest(req, res, req.body);
-    } catch (error) {
-      console.error("Error handling MCP request:", error);
-      if (!res.headersSent) {
-        res.status(500).json({
-          jsonrpc: "2.0",
-          error: {
-            code: -32603,
-            message: "Internal server error",
-          },
-          id: null,
-        });
+        await server.connect(transport);
+        await transport.handleRequest(req, res, req.body);
+      } catch (error) {
+        console.error("Error handling MCP request:", error);
+        if (!res.headersSent) {
+          res.status(500).json({
+            jsonrpc: "2.0",
+            error: {
+              code: -32603,
+              message: "Internal server error",
+            },
+            id: null,
+          });
+        }
       }
     }
-  });
+  );
 
   // SSE notifications not supported in stateless mode
-  app.get("/mcp", async (req: express.Request, res: express.Response) => {
-    console.log("Received GET MCP request");
-    res.writeHead(405).end(
-      JSON.stringify({
-        jsonrpc: "2.0",
-        error: {
-          code: -32000,
-          message: "Method not allowed.",
-        },
-        id: null,
-      })
-    );
-  });
+  app.get(
+    ["/mcp", "/mcp/"],
+    async (req: express.Request, res: express.Response) => {
+      console.log("Received GET MCP request");
+      res.writeHead(405).end(
+        JSON.stringify({
+          jsonrpc: "2.0",
+          error: {
+            code: -32000,
+            message: "Method not allowed.",
+          },
+          id: null,
+        })
+      );
+    }
+  );
 
   // Session termination not needed in stateless mode
-  app.delete("/mcp", async (req: express.Request, res: express.Response) => {
-    console.log("Received DELETE MCP request");
-    res.writeHead(405).end(
-      JSON.stringify({
-        jsonrpc: "2.0",
-        error: {
-          code: -32000,
-          message: "Method not allowed.",
-        },
-        id: null,
-      })
-    );
-  });
+  app.delete(
+    ["/mcp", "/mcp/"],
+    async (req: express.Request, res: express.Response) => {
+      console.log("Received DELETE MCP request");
+      res.writeHead(405).end(
+        JSON.stringify({
+          jsonrpc: "2.0",
+          error: {
+            code: -32000,
+            message: "Method not allowed.",
+          },
+          id: null,
+        })
+      );
+    }
+  );
 
   return app;
 };
