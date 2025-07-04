@@ -4,6 +4,13 @@ import { randomUUID } from "node:crypto";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js";
 import { getMCPServer } from "./server";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+
+export const setupStudioServer = async () => {
+  const server = getMCPServer();
+  const transport = new StdioServerTransport();
+  await server.connect(transport);
+};
 
 export const setupServer = (stateful: boolean): Express => {
   if (stateful) {
