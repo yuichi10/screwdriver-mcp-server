@@ -5,7 +5,15 @@ import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/
 import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js";
 import { getMCPServer } from "./server";
 
-export const setupSessionServer = (): Express => {
+export const setupServer = (stateful: boolean): Express => {
+  if (stateful) {
+    return setupStatefulServer();
+  } else {
+    return setupStatelessServer();
+  }
+};
+
+const setupStatefulServer = (): Express => {
   const app = express();
   app.use(express.json());
   const transports: { [sessionId: string]: StreamableHTTPServerTransport } = {};
@@ -28,12 +36,7 @@ export const setupSessionServer = (): Express => {
             // Store the transport by session ID
             transports[sessionId] = transport;
           },
-          // DNS rebinding protection is disabled by default for backwards compatibility. If you are running this server
-          // locally, make sure to set:
-          // enableDnsRebindingProtection: true,
-          // allowedHosts: ['127.0.0.1'],
         });
-        // Clean up transport when closed
         transport.onclose = () => {
           if (transport.sessionId) {
             delete transports[transport.sessionId];
@@ -42,7 +45,6 @@ export const setupSessionServer = (): Express => {
         const server = getMCPServer();
         await server.connect(transport);
       } else {
-        // Invalid request
         res.status(400).json({
           jsonrpc: "2.0",
           error: {
@@ -53,12 +55,10 @@ export const setupSessionServer = (): Express => {
         });
         return;
       }
-      // Handle the request
       await transport.handleRequest(req, res, req.body);
     }
   );
 
-  // Reusable handler for GET and DELETE requests
   const handleSessionRequest = async (
     req: express.Request,
     res: express.Response
@@ -74,45 +74,19 @@ export const setupSessionServer = (): Express => {
     await transport.handleRequest(req, res);
   };
 
-  // Handle GET requests for server-to-client notifications via SSE
   app.get(["/mcp", "/mcp/"], handleSessionRequest);
-  // app.get("/mcp", async (req, res) => {
-  //   const transport = new StreamableHTTPServerTransport({
-  //     sessionIdGenerator: () => randomUUID(),
-  //     onsessioninitialized: (sessionId) => {
-  //       transports[sessionId] = transport;
-  //     },
-  //   });
-
-  //   transport.onclose = () => {
-  //     if (transport.sessionId) {
-  //       delete transports[transport.sessionId];
-  //     }
-  //   };
-
-  //   const server = getMCPServer();
-  //   await server.connect(transport);
-
-  //   await transport.handleRequest(req, res);
-  // });
-
-  // Handle DELETE requests for session termination
   app.delete(["/mcp", "/mcp/"], handleSessionRequest);
 
   return app;
 };
 
-export const setupStatelessServer = (): Express => {
+const setupStatelessServer = (): Express => {
   const app = express();
   app.use(express.json());
 
   app.post(
     ["/mcp", "/mcp/"],
     async (req: express.Request, res: express.Response) => {
-      // In stateless mode, create a new instance of transport and server for each request
-      // to ensure complete isolation. A single instance would cause request ID collisions
-      // when multiple clients connect concurrently.
-
       try {
         const server = getMCPServer();
         const transport: StreamableHTTPServerTransport =
@@ -142,7 +116,6 @@ export const setupStatelessServer = (): Express => {
     }
   );
 
-  // SSE notifications not supported in stateless mode
   app.get(
     ["/mcp", "/mcp/"],
     async (req: express.Request, res: express.Response) => {
@@ -160,7 +133,6 @@ export const setupStatelessServer = (): Express => {
     }
   );
 
-  // Session termination not needed in stateless mode
   app.delete(
     ["/mcp", "/mcp/"],
     async (req: express.Request, res: express.Response) => {

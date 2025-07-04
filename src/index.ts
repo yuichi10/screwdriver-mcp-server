@@ -1,17 +1,11 @@
-import { setupSessionServer, setupStatelessServer } from "./presentation/";
+import { setupServer } from "./presentation/";
 import { serverConfig } from "./config";
-
-let app;
 
 const config = serverConfig;
 
 const port = config.port || 3000;
 
-if (config.stateful) {
-  app = setupSessionServer();
-} else {
-  app = setupStatelessServer();
-}
+const app = setupServer(config.stateful);
 
 app.listen(port, () => {
   console.log(`MCP Server (Express) listening on http://localhost:${port}`);
