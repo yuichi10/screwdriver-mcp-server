@@ -10,6 +10,7 @@ import { addTool } from "../application/add.tool";
 import { createScrewdriverJwt } from "../application/createScrewdriverJwt.tool";
 import { showInformation } from "../application/information.resource";
 import { getScrewdriverPipelineByRepo } from "../application/getScrewdriverPipelineByRepo.tool";
+import { getScrewdriverPipelineById } from "../application/getScrewdriverPipelineById.tool";
 
 export type MCPTool = {
   name: string;
@@ -58,6 +59,14 @@ export const setupMCPServer = () => {
       input: getScrewdriverPipelineByRepo.schema,
       handler: getScrewdriverPipelineByRepo.handler,
     },
+    {
+      name: "getScrewdriverPipelineById",
+      title: "Get Screwdriver Pipeline by ID",
+      description:
+        "Retrieves Screwdriver pipeline information using a pipeline ID.",
+      input: getScrewdriverPipelineById.schema,
+      handler: getScrewdriverPipelineById.handler,
+    },
   ];
   resources = [
     {
@@ -88,7 +97,7 @@ export const getMCPServer = () => {
         outputSchema: tool.output,
         annotations: tool.annotations,
       },
-      tool.handler
+      tool.handler,
     );
   }
 
@@ -97,7 +106,7 @@ export const getMCPServer = () => {
       resource.name,
       resource.template,
       resource.config,
-      resource.handler
+      resource.handler,
     );
   }
   return server;

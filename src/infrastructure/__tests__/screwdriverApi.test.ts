@@ -1,4 +1,7 @@
-import { getScrewdriverJwt, getScrewdriverPipelineByRepo } from "../screwdriverApi";
+import {
+  getScrewdriverJwt,
+  getScrewdriverPipelineByRepo,
+} from "../screwdriverApi";
 import { serverConfig } from "../../config";
 
 jest.mock("../../config", () => ({
@@ -16,7 +19,7 @@ describe("getScrewdriverJwt", () => {
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve({ token: mockJwt }),
-      })
+      }),
     ) as jest.Mock;
   });
 
@@ -28,7 +31,7 @@ describe("getScrewdriverJwt", () => {
     const jwt = await getScrewdriverJwt(mockApiToken);
     expect(jwt).toBe(mockJwt);
     expect(global.fetch).toHaveBeenCalledWith(
-      `${serverConfig.api_url}/auth/token?api_token=${mockApiToken}`
+      `${serverConfig.api_url}/auth/token?api_token=${mockApiToken}`,
     );
   });
 
@@ -37,19 +40,21 @@ describe("getScrewdriverJwt", () => {
       Promise.resolve({
         ok: false,
         status: 400,
-      })
+      }),
     ) as jest.Mock;
 
     await expect(getScrewdriverJwt(mockApiToken)).rejects.toThrow(
-      "Failed to get Screwdriver JWT: HTTP error! status: 400"
+      "Failed to get Screwdriver JWT: HTTP error! status: 400",
     );
   });
 
   it("should throw an error when the fetch call throws an error", async () => {
-    global.fetch = jest.fn(() => Promise.reject(new Error("Network error"))) as jest.Mock;
+    global.fetch = jest.fn(() =>
+      Promise.reject(new Error("Network error")),
+    ) as jest.Mock;
 
     await expect(getScrewdriverJwt(mockApiToken)).rejects.toThrow(
-      "Failed to get Screwdriver JWT: Network error"
+      "Failed to get Screwdriver JWT: Network error",
     );
   });
 });
@@ -64,7 +69,7 @@ describe("getScrewdriverPipelineByRepo", () => {
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve(mockPipeline),
-      })
+      }),
     ) as jest.Mock;
   });
 
@@ -75,15 +80,19 @@ describe("getScrewdriverPipelineByRepo", () => {
   const mockJwt = "mock_jwt_token";
 
   it("should return pipeline data when the API call is successful", async () => {
-    const pipeline = await getScrewdriverPipelineByRepo(mockOrgName, mockRepoName, mockJwt);
+    const pipeline = await getScrewdriverPipelineByRepo(
+      mockOrgName,
+      mockRepoName,
+      mockJwt,
+    );
     expect(pipeline).toEqual(mockPipeline);
     expect(global.fetch).toHaveBeenCalledWith(
       `${serverConfig.api_url}/pipelines?search=${encodeURIComponent(`${mockOrgName}/${mockRepoName}`)}`,
       {
         headers: {
-          'Authorization': `Bearer ${mockJwt}`
-        }
-      }
+          Authorization: `Bearer ${mockJwt}`,
+        },
+      },
     );
   });
 
@@ -92,19 +101,25 @@ describe("getScrewdriverPipelineByRepo", () => {
       Promise.resolve({
         ok: false,
         status: 400,
-      })
+      }),
     ) as jest.Mock;
 
-    await expect(getScrewdriverPipelineByRepo(mockOrgName, mockRepoName, mockJwt)).rejects.toThrow(
-      "Failed to get Screwdriver pipeline by repo: HTTP error! status: 400"
+    await expect(
+      getScrewdriverPipelineByRepo(mockOrgName, mockRepoName, mockJwt),
+    ).rejects.toThrow(
+      "Failed to get Screwdriver pipeline by repo: HTTP error! status: 400",
     );
   });
 
   it("should throw an error when the fetch call throws an error", async () => {
-    global.fetch = jest.fn(() => Promise.reject(new Error("Network error"))) as jest.Mock;
+    global.fetch = jest.fn(() =>
+      Promise.reject(new Error("Network error")),
+    ) as jest.Mock;
 
-    await expect(getScrewdriverPipelineByRepo(mockOrgName, mockRepoName, mockJwt)).rejects.toThrow(
-      "Failed to get Screwdriver pipeline by repo: Network error"
+    await expect(
+      getScrewdriverPipelineByRepo(mockOrgName, mockRepoName, mockJwt),
+    ).rejects.toThrow(
+      "Failed to get Screwdriver pipeline by repo: Network error",
     );
   });
 });

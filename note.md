@@ -12,3 +12,5 @@ When you fix code you should add tests for the code and pass the tests.
 When you write some code, you should tell me which layer you try to edit because each layer has same name of file. It is hard to understand the file belog which layer.
 
 If you try to run `npm test`, you do not need ask to able exec or not. If you want to write some code you should ask me and get permission.
+
+Also If you write code, you should run `npm format` after write code.

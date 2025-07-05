@@ -16,7 +16,9 @@
   "scripts": {
     "test": "jest",
     "build": "tsc",
-    "docker:build": "docker buildx build -t screwdriver-mcp-server ."
+    "docker:build": "docker buildx build -t screwdriver-mcp-server .",
+    "format": "prettier --write .",
+    "check-format": "prettier --check ."
   },
   "repository": {
     "type": "git",
@@ -35,6 +37,7 @@
     "@types/jest": "^30.0.0",
     "@types/js-yaml": "^4.0.9",
     "jest": "^30.0.4",
+    "prettier": "^3.6.2",
     "ts-jest": "^29.4.0"
   }
 }

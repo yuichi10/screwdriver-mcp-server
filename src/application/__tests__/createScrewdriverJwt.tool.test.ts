@@ -27,10 +27,14 @@ describe("createScrewdriverJwt.tool", () => {
   it("should return a JWT token when apiToken is provided", async () => {
     (getScrewdriverJwt as jest.Mock).mockResolvedValue(mockJwt);
 
-    const result = await createScrewdriverJwt.handler({ apiToken: mockApiToken });
+    const result = await createScrewdriverJwt.handler({
+      apiToken: mockApiToken,
+    });
 
     expect(getScrewdriverJwt).toHaveBeenCalledWith(mockApiToken);
-    expect(result).toEqual({ content: [{ type: "text", text: `TOKEN_START: ${mockJwt} :TOKEN_END` }] });
+    expect(result).toEqual({
+      content: [{ type: "text", text: `TOKEN_START: ${mockJwt} :TOKEN_END` }],
+    });
   });
 
   it("should return a JWT token when apiToken is not provided but config token is available", async () => {
@@ -40,23 +44,36 @@ describe("createScrewdriverJwt.tool", () => {
     const result = await createScrewdriverJwt.handler({});
 
     expect(getScrewdriverJwt).toHaveBeenCalledWith(mockConfigToken);
-    expect(result).toEqual({ content: [{ type: "text", text: `TOKEN_START: ${mockJwt} :TOKEN_END` }] });
+    expect(result).toEqual({
+      content: [{ type: "text", text: `TOKEN_START: ${mockJwt} :TOKEN_END` }],
+    });
   });
 
   it("should return an error when no apiToken or config token is available", async () => {
     const result = await createScrewdriverJwt.handler({});
 
     expect(getScrewdriverJwt).not.toHaveBeenCalled();
-    expect(result).toEqual({ content: [{ type: "text", text: "Error: No API token provided and no token configured." }] });
+    expect(result).toEqual({
+      content: [
+        {
+          type: "text",
+          text: "Error: No API token provided and no token configured.",
+        },
+      ],
+    });
   });
 
   it("should return an error message when getScrewdriverJwt fails", async () => {
     const errorMessage = "Failed to get JWT";
     (getScrewdriverJwt as jest.Mock).mockRejectedValue(new Error(errorMessage));
 
-    const result = await createScrewdriverJwt.handler({ apiToken: mockApiToken });
+    const result = await createScrewdriverJwt.handler({
+      apiToken: mockApiToken,
+    });
 
     expect(getScrewdriverJwt).toHaveBeenCalledWith(mockApiToken);
-    expect(result).toEqual({ content: [{ type: "text", text: `Error: ${errorMessage}` }] });
+    expect(result).toEqual({
+      content: [{ type: "text", text: `Error: ${errorMessage}` }],
+    });
   });
 });
