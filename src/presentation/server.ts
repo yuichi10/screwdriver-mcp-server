@@ -62,7 +62,8 @@ export const setupMCPServer = () => {
     {
       name: "getScrewdriverPipelineById",
       title: "Get Screwdriver Pipeline by ID",
-      description: "Retrieves Screwdriver pipeline information using a pipeline ID.",
+      description:
+        "Retrieves Screwdriver pipeline information using a pipeline ID.",
       input: getScrewdriverPipelineById.schema,
       handler: getScrewdriverPipelineById.handler,
     },
@@ -96,7 +97,7 @@ export const getMCPServer = () => {
         outputSchema: tool.output,
         annotations: tool.annotations,
       },
-      tool.handler
+      tool.handler,
     );
   }
 
@@ -105,7 +106,7 @@ export const getMCPServer = () => {
       resource.name,
       resource.template,
       resource.config,
-      resource.handler
+      resource.handler,
     );
   }
   return server;

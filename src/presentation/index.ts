@@ -66,12 +66,12 @@ const setupStatefulServer = (): Express => {
         return;
       }
       await transport.handleRequest(req, res, req.body);
-    }
+    },
   );
 
   const handleSessionRequest = async (
     req: express.Request,
-    res: express.Response
+    res: express.Response,
   ) => {
     console.log("Received handleSessionRequest");
     const sessionId = req.headers["mcp-session-id"] as string | undefined;
@@ -123,7 +123,7 @@ const setupStatelessServer = (): Express => {
           });
         }
       }
-    }
+    },
   );
 
   app.get(
@@ -138,9 +138,9 @@ const setupStatelessServer = (): Express => {
             message: "Method not allowed.",
           },
           id: null,
-        })
+        }),
       );
-    }
+    },
   );
 
   app.delete(
@@ -155,9 +155,9 @@ const setupStatelessServer = (): Express => {
             message: "Method not allowed.",
           },
           id: null,
-        })
+        }),
       );
-    }
+    },
   );
 
   return app;

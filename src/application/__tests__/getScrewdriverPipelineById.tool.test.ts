@@ -15,21 +15,37 @@ describe("getScrewdriverPipelineById.tool (Application Layer)", () => {
   });
 
   it("should return pipeline data from the domain layer", async () => {
-    (getScrewdriverPipelineByIdFromDomain as jest.Mock).mockResolvedValue(mockPipeline);
+    (getScrewdriverPipelineByIdFromDomain as jest.Mock).mockResolvedValue(
+      mockPipeline,
+    );
 
-    const result = await getScrewdriverPipelineById.handler({ pipelineId: mockPipelineId, jwtToken: mockJwt });
+    const result = await getScrewdriverPipelineById.handler({
+      pipelineId: mockPipelineId,
+      jwtToken: mockJwt,
+    });
 
     expect(result.content[0].text).toEqual(JSON.stringify(mockPipeline));
-    expect(getScrewdriverPipelineByIdFromDomain).toHaveBeenCalledWith(mockPipelineId, mockJwt);
+    expect(getScrewdriverPipelineByIdFromDomain).toHaveBeenCalledWith(
+      mockPipelineId,
+      mockJwt,
+    );
   });
 
   it("should throw an error if the domain layer throws an error", async () => {
     const mockError = new Error("Domain error");
-    (getScrewdriverPipelineByIdFromDomain as jest.Mock).mockRejectedValue(mockError);
-
-    await expect(getScrewdriverPipelineById.handler({ pipelineId: mockPipelineId, jwtToken: mockJwt })).rejects.toThrow(
-      "Domain error"
+    (getScrewdriverPipelineByIdFromDomain as jest.Mock).mockRejectedValue(
+      mockError,
     );
-    expect(getScrewdriverPipelineByIdFromDomain).toHaveBeenCalledWith(mockPipelineId, mockJwt);
+
+    await expect(
+      getScrewdriverPipelineById.handler({
+        pipelineId: mockPipelineId,
+        jwtToken: mockJwt,
+      }),
+    ).rejects.toThrow("Domain error");
+    expect(getScrewdriverPipelineByIdFromDomain).toHaveBeenCalledWith(
+      mockPipelineId,
+      mockJwt,
+    );
   });
 });

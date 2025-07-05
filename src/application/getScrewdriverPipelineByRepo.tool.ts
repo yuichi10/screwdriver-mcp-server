@@ -18,7 +18,7 @@ export const getScrewdriverPipelineByRepo = {
       const pipeline = await getScrewdriverPipelineByRepoFromDomain(
         orgName,
         repoName,
-        jwtToken
+        jwtToken,
       );
       return {
         content: [{ type: "text" as const, text: JSON.stringify(pipeline) }],
@@ -26,7 +26,7 @@ export const getScrewdriverPipelineByRepo = {
     } catch (error) {
       console.error(
         "Error in application layer for getScrewdriverPipelineByRepo:",
-        error
+        error,
       );
       throw error;
     }

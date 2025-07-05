@@ -5,12 +5,12 @@ export const getScrewdriverPipelineByRepoInputSchema = z.object({
   orgName: z
     .string()
     .describe(
-      "The organization name of the GitHub repository (e.g., yuichi10)."
+      "The organization name of the GitHub repository (e.g., yuichi10).",
     ),
   repoName: z
     .string()
     .describe(
-      "The repository name of the GitHub repository (e.g., screwdriver-mcp-server)."
+      "The repository name of the GitHub repository (e.g., screwdriver-mcp-server).",
     ),
   jwtToken: z
     .string()
@@ -20,19 +20,19 @@ export const getScrewdriverPipelineByRepoInputSchema = z.object({
 export const getScrewdriverPipelineByRepo = async (
   orgName: string,
   repoName: string,
-  jwtToken: string
+  jwtToken: string,
 ): Promise<any> => {
   try {
     const pipeline = await getScrewdriverPipelineByRepoFromApi(
       orgName,
       repoName,
-      jwtToken
+      jwtToken,
     );
     return pipeline;
   } catch (error) {
     console.error(
       "Error in domain layer for getScrewdriverPipelineByRepo:",
-      error
+      error,
     );
     throw error;
   }

@@ -15,21 +15,31 @@ describe("getScrewdriverPipelineById.tool (Domain Layer)", () => {
   });
 
   it("should return pipeline data from the infrastructure layer", async () => {
-    (getScrewdriverPipelineByIdFromApi as jest.Mock).mockResolvedValue(mockPipeline);
+    (getScrewdriverPipelineByIdFromApi as jest.Mock).mockResolvedValue(
+      mockPipeline,
+    );
 
     const pipeline = await getScrewdriverPipelineById(mockPipelineId, mockJwt);
 
     expect(pipeline).toEqual(mockPipeline);
-    expect(getScrewdriverPipelineByIdFromApi).toHaveBeenCalledWith(mockPipelineId, mockJwt);
+    expect(getScrewdriverPipelineByIdFromApi).toHaveBeenCalledWith(
+      mockPipelineId,
+      mockJwt,
+    );
   });
 
   it("should throw an error if the infrastructure layer throws an error", async () => {
     const mockError = new Error("Infrastructure error");
-    (getScrewdriverPipelineByIdFromApi as jest.Mock).mockRejectedValue(mockError);
-
-    await expect(getScrewdriverPipelineById(mockPipelineId, mockJwt)).rejects.toThrow(
-      "Infrastructure error"
+    (getScrewdriverPipelineByIdFromApi as jest.Mock).mockRejectedValue(
+      mockError,
     );
-    expect(getScrewdriverPipelineByIdFromApi).toHaveBeenCalledWith(mockPipelineId, mockJwt);
+
+    await expect(
+      getScrewdriverPipelineById(mockPipelineId, mockJwt),
+    ).rejects.toThrow("Infrastructure error");
+    expect(getScrewdriverPipelineByIdFromApi).toHaveBeenCalledWith(
+      mockPipelineId,
+      mockJwt,
+    );
   });
 });

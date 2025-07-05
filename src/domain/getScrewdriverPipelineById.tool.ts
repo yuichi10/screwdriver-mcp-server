@@ -10,18 +10,18 @@ export const getScrewdriverPipelineByIdInputSchema = z.object({
 
 export const getScrewdriverPipelineById = async (
   pipelineId: number,
-  jwtToken: string
+  jwtToken: string,
 ): Promise<any> => {
   try {
     const pipeline = await getScrewdriverPipelineByIdFromApi(
       pipelineId,
-      jwtToken
+      jwtToken,
     );
     return pipeline;
   } catch (error) {
     console.error(
       "Error in domain layer for getScrewdriverPipelineById:",
-      error
+      error,
     );
     throw error;
   }

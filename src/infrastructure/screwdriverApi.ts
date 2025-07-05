@@ -19,12 +19,12 @@ export const getScrewdriverJwt = async (apiToken: string): Promise<string> => {
 export const getScrewdriverPipelineByRepo = async (
   orgName: string,
   repoName: string,
-  jwtToken: string
+  jwtToken: string,
 ): Promise<any> => {
   const apiUrl = serverConfig.api_url;
   const url = `${apiUrl.replace(
     /\/+$/,
-    ""
+    "",
   )}/pipelines?search=${encodeURIComponent(`${orgName}/${repoName}`)}`;
   try {
     const response = await fetch(url, {
@@ -40,14 +40,14 @@ export const getScrewdriverPipelineByRepo = async (
   } catch (error) {
     console.error("Error fetching Screwdriver pipeline by repo:", error);
     throw new Error(
-      `Failed to get Screwdriver pipeline by repo: ${(error as any).message}`
+      `Failed to get Screwdriver pipeline by repo: ${(error as any).message}`,
     );
   }
 };
 
 export const getScrewdriverPipelineById = async (
   pipelineId: number,
-  jwtToken: string
+  jwtToken: string,
 ): Promise<any> => {
   const apiUrl = serverConfig.api_url;
   const url = `${apiUrl.replace(/\/+$/, "")}/pipelines/${pipelineId}`;
@@ -65,7 +65,7 @@ export const getScrewdriverPipelineById = async (
   } catch (error) {
     console.error("Error fetching Screwdriver pipeline by ID:", error);
     throw new Error(
-      `Failed to get Screwdriver pipeline by ID: ${(error as any).message}`
+      `Failed to get Screwdriver pipeline by ID: ${(error as any).message}`,
     );
   }
 };
