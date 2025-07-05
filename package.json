@@ -14,7 +14,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "build": "tsc",
     "docker:build": "docker buildx build -t screwdriver-mcp-server ."
   },
@@ -32,6 +32,9 @@
   "devDependencies": {
     "@types/config": "^3.3.5",
     "@types/express": "^5.0.3",
-    "@types/js-yaml": "^4.0.9"
+    "@types/jest": "^30.0.0",
+    "@types/js-yaml": "^4.0.9",
+    "jest": "^30.0.4",
+    "ts-jest": "^29.4.0"
   }
 }

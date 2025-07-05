@@ -1,4 +1,4 @@
-import { addToolInputSchema } from '../domain/addTool';
+import { addToolInputSchema } from '../domain/add.tool';
 
 export const addTool = {
   schema: addToolInputSchema,

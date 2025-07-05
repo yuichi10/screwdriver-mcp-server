@@ -6,9 +6,11 @@ import {
   ResourceMetadata,
   ToolCallback,
 } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { addTool } from "../application/addTool";
-import { addToolInputSchema } from "../domain/addTool";
-import { showInformation } from "../application/informatinoResource";
+import { addTool } from "../application/add.tool";
+import { addToolInputSchema } from "../domain/add.tool";
+import { createScrewdriverJwt } from "../application/createScrewdriverJwt.tool";
+import { createScrewdriverJwtInputSchema } from "../domain/createScrewdriverJwt.tool";
+import { showInformation } from "../application/information.resource";
 
 export type MCPTool = {
   name: string;
@@ -41,6 +43,13 @@ export const setupMCPServer = () => {
       description: "Add two numbers",
       input: addToolInputSchema,
       handler: addTool.handler,
+    },
+    {
+      name: "createScrewdriverJwt",
+      title: "Create Screwdriver JWT",
+      description: "Creates a JWT for Screwdriver API authentication.",
+      input: createScrewdriverJwtInputSchema,
+      handler: createScrewdriverJwt.handler,
     },
   ];
   resources = [
