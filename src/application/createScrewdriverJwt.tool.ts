@@ -18,7 +18,14 @@ export const createScrewdriverJwt = {
     }
     try {
       const jwtToken = await getScrewdriverJwt(tokenToUse);
-      return { content: [{ type: "text" as const, text: jwtToken }] };
+      return {
+        content: [
+          {
+            type: "text",
+            text: `TOKEN_START: ${jwtToken} :TOKEN_END`,
+          } as const,
+        ],
+      };
     } catch (error) {
       console.error("Error creating Screwdriver JWT:", error);
       return {

@@ -9,7 +9,6 @@ export const getScrewdriverJwt = async (apiToken: string): Promise<string> => {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const data = await response.json();
-    console.log("Screwdriver JWT Token:", data.token);
     return data.token;
   } catch (error) {
     console.error("Error fetching Screwdriver JWT:", error);
@@ -27,8 +26,6 @@ export const getScrewdriverPipelineByRepo = async (
     /\/+$/,
     ""
   )}/pipelines?search=${encodeURIComponent(`${orgName}/${repoName}`)}`;
-  console.log(url);
-  console.log("Received JWT Token:", jwtToken);
   try {
     const response = await fetch(url, {
       headers: {

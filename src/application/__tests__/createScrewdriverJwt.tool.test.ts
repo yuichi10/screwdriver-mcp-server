@@ -30,7 +30,7 @@ describe("createScrewdriverJwt.tool", () => {
     const result = await createScrewdriverJwt.handler({ apiToken: mockApiToken });
 
     expect(getScrewdriverJwt).toHaveBeenCalledWith(mockApiToken);
-    expect(result).toEqual({ content: [{ type: "text", text: mockJwt }] });
+    expect(result).toEqual({ content: [{ type: "text", text: `TOKEN_START: ${mockJwt} :TOKEN_END` }] });
   });
 
   it("should return a JWT token when apiToken is not provided but config token is available", async () => {
@@ -40,7 +40,7 @@ describe("createScrewdriverJwt.tool", () => {
     const result = await createScrewdriverJwt.handler({});
 
     expect(getScrewdriverJwt).toHaveBeenCalledWith(mockConfigToken);
-    expect(result).toEqual({ content: [{ type: "text", text: mockJwt }] });
+    expect(result).toEqual({ content: [{ type: "text", text: `TOKEN_START: ${mockJwt} :TOKEN_END` }] });
   });
 
   it("should return an error when no apiToken or config token is available", async () => {
