@@ -7,10 +7,9 @@ import {
   ToolCallback,
 } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { addTool } from "../application/add.tool";
-import { addToolInputSchema } from "../domain/add.tool";
 import { createScrewdriverJwt } from "../application/createScrewdriverJwt.tool";
-import { createScrewdriverJwtInputSchema } from "../domain/createScrewdriverJwt.tool";
 import { showInformation } from "../application/information.resource";
+import { getScrewdriverPipelineByRepo } from "../application/getScrewdriverPipelineByRepo.tool";
 
 export type MCPTool = {
   name: string;
@@ -41,15 +40,23 @@ export const setupMCPServer = () => {
       name: "add",
       title: "Addition Tool",
       description: "Add two numbers",
-      input: addToolInputSchema,
+      input: addTool.schema,
       handler: addTool.handler,
     },
     {
       name: "createScrewdriverJwt",
       title: "Create Screwdriver JWT",
       description: "Creates a JWT for Screwdriver API authentication.",
-      input: createScrewdriverJwtInputSchema,
+      input: createScrewdriverJwt.schema,
       handler: createScrewdriverJwt.handler,
+    },
+    {
+      name: "getScrewdriverPipelineByRepo",
+      title: "Get Screwdriver Pipeline by Repository",
+      description:
+        "Retrieves Screwdriver pipeline information using GitHub repository organization and name.",
+      input: getScrewdriverPipelineByRepo.schema,
+      handler: getScrewdriverPipelineByRepo.handler,
     },
   ];
   resources = [
@@ -77,7 +84,7 @@ export const getMCPServer = () => {
       {
         title: tool.title,
         description: tool.description,
-        inputSchema: tool.input,
+        inputSchema: tool.input.shape,
         outputSchema: tool.output,
         annotations: tool.annotations,
       },

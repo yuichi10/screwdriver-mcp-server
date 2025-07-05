@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.13.3",
+    "@modelcontextprotocol/sdk": "^1.15.0",
     "@types/node": "^24.0.10",
     "axios": "^1.10.0",
     "config": "^4.0.0",
