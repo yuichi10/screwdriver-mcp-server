@@ -2,6 +2,6 @@ import config from "config";
 
 export const serverConfig = {
   port: config.get<number>("port"),
-  server: config.get<string>("server"),
+  server_mode: config.get<string>("server_mode"),
   stateful: config.get<boolean>("stateful"),
 };

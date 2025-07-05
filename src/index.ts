@@ -5,7 +5,7 @@ const config = serverConfig;
 
 const port = config.port || 3000;
 
-if (config.server === "studio") {
+if (config.server_mode === "studio") {
   setupStudioServer();
 } else {
   const app = setupServer(config.stateful);
